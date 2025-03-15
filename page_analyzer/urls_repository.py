@@ -12,5 +12,6 @@ class UrlRepository:
             cursor.execute(
                 """
     `       INSERT INTO urls (name, created_at) VALUES (%s, %s) RETURNING ID
-            """
+            """, (url, datetime.now())
             )
+            return cursor.fetchone()[id]
