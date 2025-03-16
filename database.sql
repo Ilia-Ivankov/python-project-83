@@ -1,11 +1,12 @@
 -- Таблица для хранения URL-адресов.
-CREATE TABLE urls (
+CREATE TABLE IF NOT EXISTS urls (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 -- Таблица для хранения данных URL.
-CREATE TABLE url_data (
+CREATE TABLE IF NOT EXISTS url_data (
     id SERIAL PRIMARY KEY,
     response_code INTEGER,
     h1 VARCHAR(255),
@@ -13,4 +14,3 @@ CREATE TABLE url_data (
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
