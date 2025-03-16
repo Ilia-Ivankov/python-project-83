@@ -21,8 +21,8 @@ class UrlRepository:
         with db_conn.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute(
                 """
-                INSERT INTO urls (name, created_at) 
-                VALUES (%s, %s) 
+                INSERT INTO urls (name, created_at)
+                VALUES (%s, %s)
                 RETURNING id
                 """,
                 (url, datetime.now()),
@@ -44,7 +44,7 @@ class UrlRepository:
                 """
                 SELECT * FROM urls WHERE id = %s
                 """,
-                (url_id,)
+                (url_id,),
             )
             result = cursor.fetchone()
             return result if result else None
