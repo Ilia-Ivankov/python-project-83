@@ -21,13 +21,12 @@ class UrlRepository:
                 """,
                 (url, datetime.now()),
             )
-            db_connection.commit()  
+            db_connection.commit()
             return cursor.fetchone()["id"]
         db_connection.close()
 
     def get_url_by_id(self, url_id: int) -> dict:
         """Returns url data by it's id"""
-        
         with db_connection.cursor(cursor_factory=DictCursor) as cursor:
             cursor.execute(
                 """

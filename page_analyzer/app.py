@@ -55,7 +55,11 @@ def show_url(url_id):
     repo = UrlRepository()
     flash_messages = get_flashed_messages(with_categories=True)
     url_data = repo.get_url_by_id(url_id)
-    return render_template("url.html", site=url_data, flashed_messages=flash_messages)
+    return render_template(
+        "url.html",
+        site=url_data,
+        flashed_messages=flash_messages,
+    )
 
 
 @app.get("/urls")
