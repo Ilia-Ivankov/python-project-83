@@ -4,7 +4,7 @@
     <h1 class="text-center mb-4">Сайты</h1>
     <div class="table-responsive">
         {% if urls %}
-        <table class="table table-striped table-hover shadow-sm">
+        <table class="table table-striped table-hover shadow-sm" data-test="urls">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col" class="text-center">ID</th>
@@ -18,12 +18,20 @@
                 <tr class="align-middle">
                     <td class="text-center">{{url.id}}</td>
                     <td class="text-center">
-                        <a href="{{ url_for('show_url', url_id=url.id) }}" class="text-decoration-none">
+                        <a href="{{ url_for('show_url_info', url_id=url.id) }}" class="text-decoration-none">
                             {{url.name}}
                         </a>
                     </td>
-                    <td class="text-center">-</td>
-                    <td class="text-center">-</td>
+                    {%if url.last_check_date%}
+                    <td class="text-center">{{url.last_check_date}}</td>
+                    {% else %}
+                    <td class="text-center"></td>
+                    {%endif%}
+                    {% if url.status_code %}
+                    <td class="text-center">{{url.status_code}}</td>
+                    {% else %}
+                    <td class="text-center"></td>
+                    {%endif%}
                 </tr>
                 {% endfor %}
             </tbody>

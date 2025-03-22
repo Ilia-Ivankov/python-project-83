@@ -11,6 +11,7 @@ from page_analyzer.config import SECRET_KEY
 from validators import url as validate_url
 from urllib.parse import urlparse
 from page_analyzer.urls_repository import UrlRepository
+import requests
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
@@ -31,7 +32,6 @@ def add_url():
 
     if len(submitted_url) > 255 or not validate_url(submitted_url):
         flash("Некорректный URL", "danger")
-        print("Flash message set: Некорректный URL, danger")
         return redirect(url_for("index"))
 
     parsed = urlparse(submitted_url)
@@ -40,24 +40,25 @@ def add_url():
 
     if existing_url:
         flash("Страница уже существует", "info")
-        print("Flash message set: Страница уже существует, info")
-        return redirect(url_for("show_url", url_id=existing_url["id"]))
+        return redirect(url_for("show_url_info", url_id=existing_url["id"]))
 
     url_id = repo.save_url(normalized_url)
     flash("Страница успешно добавлена", "success")
-    print("Flash message set: Страница успешно добавлена, success")
-    return redirect(url_for("show_url", url_id=url_id))
+    return redirect(url_for("show_url_info", url_id=url_id))
 
 
 @app.route("/urls/<int:url_id>")
-def show_url(url_id):
+def show_url_info(url_id):
     """Show details for specific URL with flash_messages"""
     repo = UrlRepository()
     flash_messages = get_flashed_messages(with_categories=True)
     url_data = repo.get_url_by_id(url_id)
+    url_checks = repo.get_all_checks(url_id)
+
     return render_template(
         "url.html",
         site=url_data,
+        checks=url_checks,
         flashed_messages=flash_messages,
     )
 
@@ -68,3 +69,18 @@ def get_urls():
     repo = UrlRepository()
     all_urls = repo.get_all_urls()
     return render_template("urls.html", urls=all_urls)
+
+
+@app.post("/urls/<int:url_id>/checks")
+def add_url_check(url_id):
+    """Add new check for specific URL"""
+    repo = UrlRepository()
+    url = repo.get_url_by_id(url_id).get("name", "")
+    response = requests.get(url, timeout=180)
+    try:
+        response.raise_for_status()
+        status = response.status_code
+        repo.save_url_check(url_id, status)
+    except requests.exceptions.RequestException:
+        flash("Произошла ошибка при проверке", "danger")
+    return redirect(url_for("show_url_info", url_id=url_id))
