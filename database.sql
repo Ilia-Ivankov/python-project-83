@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS url_checks CASCADE;
+DROP TABLE IF EXISTS urls CASCADE;
+
 -- Таблица для хранения URL-адресов.
 CREATE TABLE IF NOT EXISTS urls (
     id SERIAL PRIMARY KEY,
