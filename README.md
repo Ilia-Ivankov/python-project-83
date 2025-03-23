@@ -1,9 +1,10 @@
-# SEO Website Analyzer
-
+# SEO Website Analyzer 🔍
+## Hexlet test and linter status
 [![Hexlet tests](https://github.com/Ilia-Ivankov/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Ilia-Ivankov/python-project-83/actions)
+## CI 
 [![CI Status](https://github.com/Ilia-Ivankov/python-project-83/actions/workflows/ci.yml/badge.svg)](https://github.com/Ilia-Ivankov/python-project-83/actions/workflows/ci.yml)
 
-## Project Description
+## Project Description 📝
 
 SEO Website Analyzer is a web application designed to evaluate websites' SEO readiness. The project provides comprehensive analysis of web pages, including:
 
@@ -13,7 +14,7 @@ SEO Website Analyzer is a web application designed to evaluate websites' SEO rea
 - Detailed check history for each website
 - User-friendly web interface for managing and reviewing results
 
-## Key Features
+## Key Features ✨
 
 - **URL Management**: Add and store website URLs with automatic normalization
 - **SEO Analysis**: Extract and analyze critical SEO elements from web pages
@@ -21,7 +22,7 @@ SEO Website Analyzer is a web application designed to evaluate websites' SEO rea
 - **Error Handling**: Comprehensive error handling and user notifications
 - **Responsive Design**: Mobile-friendly interface using Bootstrap
 
-## Technology Stack
+## Technology Stack 🛠️
 
 - **Backend**: Python, Flask
 - **Frontend**: HTML, Bootstrap
@@ -32,7 +33,7 @@ SEO Website Analyzer is a web application designed to evaluate websites' SEO rea
 - **CI/CD**: GitHub Actions
 - **Code Quality**: flake8
 
-## Deployment
+## Deployment 🚀
 
 The project is deployed on Render: [https://python-project-83-ysk7.onrender.com](https://python-project-83-ysk7.onrender.com)
 
@@ -72,14 +73,14 @@ For development mode with automatic reloading:
 make dev
 ```
 
-## Linting
+## Linting 🧹
 
 To run linter:
 ```bash
 make lint
 ```
 
-## How to Use
+## How to Use 🕹️
 
 1. Access the main page
 2. Enter the website URL you want to analyze
