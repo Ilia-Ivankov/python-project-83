@@ -33,7 +33,7 @@ def add_url():
 
     if len(submitted_url) > 255 or not validate_url(submitted_url):
         flash("Некорректный URL", "danger")
-        return redirect(url_for("index"))
+        return {"status": "error", "message": "Invalid URL"}, 422
 
     parsed = urlparse(submitted_url)
     normalized_url = f"{parsed.scheme}://{parsed.netloc}"
@@ -83,12 +83,10 @@ def add_url_check(url_id):
         h1 = h1_tag.text.strip() if h1_tag else None
         title_tag = soup.find("title")
         title = title_tag.text.strip() if title_tag else None
-
         description_tag = soup.find("meta", attrs={"name": "description"})
-        description = (
-            description_tag["content"].strip() if description_tag else None
-        )
+        description = description_tag["content"].strip() if description_tag else None
         repo.save_url_check(url_id, status, h1, title, description)
+        flash("Страница успешно проверена", "success")
     except requests.exceptions.RequestException:
         flash("Произошла ошибка при проверке", "danger")
     return redirect(url_for("show_url_info", url_id=url_id))
