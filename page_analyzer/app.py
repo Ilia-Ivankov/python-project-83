@@ -16,6 +16,7 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
+repo = UrlRepository()
 
 
 @app.route("/")
@@ -28,7 +29,6 @@ def index():
 @app.post("/urls")
 def add_url():
     """Handle URL submission and validation"""
-    repo = UrlRepository()
     submitted_url = request.form.get("url")
 
     if len(submitted_url) > 255 or not validate_url(submitted_url):
@@ -51,7 +51,6 @@ def add_url():
 @app.route("/urls/<int:url_id>")
 def show_url_info(url_id):
     """Show details for specific URL with flash_messages"""
-    repo = UrlRepository()
     flash_messages = get_flashed_messages(with_categories=True)
     url_data = repo.get_url_by_id(url_id)
     url_checks = repo.get_all_checks(url_id)
@@ -67,7 +66,6 @@ def show_url_info(url_id):
 @app.get("/urls")
 def get_urls():
     """Show all URLs"""
-    repo = UrlRepository()
     all_urls = repo.get_all_urls()
     return render_template("urls.html", urls=all_urls)
 
@@ -75,7 +73,6 @@ def get_urls():
 @app.post("/urls/<int:url_id>/checks")
 def add_url_check(url_id):
     """Add new check for specific URL"""
-    repo = UrlRepository()
     url = repo.get_url_by_id(url_id).get("name", "")
     response = requests.get(url, timeout=180)
     try:
@@ -91,8 +88,6 @@ def add_url_check(url_id):
         description = (
             description_tag["content"].strip() if description_tag else None
         )
-
-        # Сохраняем проверку в базу данных
         repo.save_url_check(url_id, status, h1, title, description)
     except requests.exceptions.RequestException:
         flash("Произошла ошибка при проверке", "danger")
