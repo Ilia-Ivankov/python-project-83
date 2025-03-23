@@ -78,17 +78,24 @@ class UrlRepository:
                 result = cursor.fetchone()
                 return result if result else None
 
-    def save_url_check(self, url_id: int, status_code: int) -> int:
+    def save_url_check(
+        self,
+        url_id: int,
+        status_code: int,
+        h1: str | None,
+        title: str | None,
+        description: str | None,
+    ) -> int:
         """Saves a URL check and returns the check ID."""
         with psycopg2.connect(DATABASE_URL) as db_connection:
             with db_connection.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute(
                     """
-                    INSERT INTO url_checks (url_id, status_code, created_at)
-                    VALUES (%s, %s, %s)
+                    INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at)
+                    VALUES (%s, %s, %s, %s, %s, %s)
                     RETURNING id
                     """,
-                    (url_id, status_code, datetime.today()),
+                    (url_id, status_code, h1, title, description, datetime.today()),
                 )
                 db_connection.commit()
                 return cursor.fetchone()["id"]

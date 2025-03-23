@@ -12,6 +12,7 @@ from validators import url as validate_url
 from urllib.parse import urlparse
 from page_analyzer.urls_repository import UrlRepository
 import requests
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
@@ -80,7 +81,17 @@ def add_url_check(url_id):
     try:
         response.raise_for_status()
         status = response.status_code
-        repo.save_url_check(url_id, status)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        h1_tag = soup.find('h1')
+        h1 = h1_tag.text.strip() if h1_tag else None
+        title_tag = soup.find('title')
+        title = title_tag.text.strip() if title_tag else None
+        
+        meta_description = soup.find('meta', attrs={'name': 'description'})
+        description = meta_description['content'].strip() if meta_description else None
+        
+        # Сохраняем проверку в базу данных
+        repo.save_url_check(url_id, status, h1, title, description)
     except requests.exceptions.RequestException:
         flash("Произошла ошибка при проверке", "danger")
     return redirect(url_for("show_url_info", url_id=url_id))
