@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-
 <main class="flex-grow-1">
     <div class="container-lg mt-3">
         <h1>Сайт</h1>
@@ -17,47 +16,42 @@
                     <tr>
                         <td>{{ site.id }}</td>
                         <td>{{ site.name }}</td>
-                        <td>{{ site.created_at}}</td>
+                        <td>{{ site.created_at }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-    </div>
-    <div class="mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h4">Проверки</h2>
-            <form action="/urls/{{site.id}}/checks" method="post">
-                <button type="submit" class="btn btn-sm btn-outline-success">Запустить проверку</button>
-            </form>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-sm table-striped">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col" class="py-2">ID</th>
-                        <th scope="col" class="py-2">Код ответа</th>
-                        <th scope="col" class="py-2">h1</th>
-                        <th scope="col" class="py-2">title</th>
-                        <th scope="col" class="py-2">description</th>
-                        <th scope="col" class="py-2">Дата создания</th>
-                    </tr>
-                </thead>
-                {% if checks %}
-                <tbody>
-                    {% for check in checks %}
-                    <tr>
-                        <td class="py-2">{{check.id}}</td>
-                        <td class="py-2">{{check.status_code}}</td>
-                        <td class="py-2"></td>
-                        <td class="py-2"></td>
-                        <td class="py-2"></td>
-                        <td class="py-2">{{check.created_at}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                {% endif %}
-            </table>
+        <div class="mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h4">Проверки</h2>
+                <form action="{{ url_for('add_url_check', url_id=site.id) }}" method="post">
+                    <button type="submit" class="btn btn-sm btn-outline-success">Запустить проверку</button>
+                </form>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="py-2">ID</th>
+                            <th scope="col" class="py-2">Код ответа</th>
+                            <th scope="col" class="py-2">h1</th>
+                            <th scope="col" class="py-2">title</th>
+                            <th scope="col" class="py-2">description</th>
+                            <th scope="col" class="py-2">Дата создания</th>
+                        </tr>
+                    </thead>
+                    {% if checks %}<tbody>
+                        {% for check in checks %}<tr>
+                            <td class="py-2">{{ check.id }}</td>
+                            <td class="py-2">{{ check.status_code if check.status_code else '' }}</td>
+                            <td class="py-2">{{ check.h1 if check.h1 else '' }}</td>
+                            <td class="py-2">{{ check.title if check.title else '' }}</td>
+                            <td class="py-2">{{ check.description if check.description else '' }}</td>
+                            <td class="py-2">{{check.created_at}}</td>
+                        </tr>{% endfor %}
+                    </tbody>{% endif %}
+                </table>
+            </div>
         </div>
     </div>
 </main>
