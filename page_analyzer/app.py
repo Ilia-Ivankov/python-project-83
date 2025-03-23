@@ -33,7 +33,7 @@ def add_url():
 
     if len(submitted_url) > 255 or not validate_url(submitted_url):
         flash("Некорректный URL", "danger")
-        return redirect(url_for("index")), 422
+        return render_template("index.html", flashed_messages=get_flashed_messages(with_categories=True)), 422
 
     parsed = urlparse(submitted_url)
     normalized_url = f"{parsed.scheme}://{parsed.netloc}"
