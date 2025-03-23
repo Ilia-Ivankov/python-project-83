@@ -84,7 +84,9 @@ def add_url_check(url_id):
         title_tag = soup.find("title")
         title = title_tag.text.strip() if title_tag else None
         description_tag = soup.find("meta", attrs={"name": "description"})
-        description = description_tag["content"].strip() if description_tag else None
+        description = (
+            description_tag["content"].strip() if description_tag else None,
+        )
         repo.save_url_check(url_id, status, h1, title, description)
         flash("Страница успешно проверена", "success")
     except requests.exceptions.RequestException:
