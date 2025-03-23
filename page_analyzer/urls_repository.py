@@ -91,11 +91,19 @@ class UrlRepository:
             with db_connection.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute(
                     """
-                    INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at)
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    INSERT INTO url_checks (
+                        url_id, status_code, h1, title, description, created_at
+                    ) VALUES (%s, %s, %s, %s, %s, %s)
                     RETURNING id
                     """,
-                    (url_id, status_code, h1, title, description, datetime.today()),
+                    (
+                        url_id,
+                        status_code,
+                        h1,
+                        title,
+                        description,
+                        datetime.today()
+                    ),
                 )
                 db_connection.commit()
                 return cursor.fetchone()["id"]
