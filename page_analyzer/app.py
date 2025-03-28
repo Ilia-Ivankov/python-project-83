@@ -35,7 +35,7 @@ def add_url():
 
     if not validate_url(url):
         flash("Некорректный URL", "danger")
-        return redirect(url_for("index"))
+        return render_template("index.html", flashed_messages=get_flashed_messages(with_categories=True)), 422
 
     normalized_url = normalize_url(url)
     existing_url = repo.get_url_by_name(normalized_url)
