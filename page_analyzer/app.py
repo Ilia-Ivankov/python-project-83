@@ -7,12 +7,14 @@ from flask import (
     request,
     url_for,
 )
-from page_analyzer.config import SECRET_KEY
-from validators import url as validate_url
-from urllib.parse import urlparse
-from page_analyzer.urls_repository import UrlRepository
-import requests
-from bs4 import BeautifulSoup
+from page_analyzer.database import UrlRepository
+from page_analyzer.utils import normalize_url, validate_url, check_and_parse_url
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
@@ -28,25 +30,21 @@ def index():
 
 @app.post("/urls")
 def add_url():
-    """Handle URL submission and validation"""
-    submitted_url = request.form.get("url")
+    """Add new URL to database"""
+    url = request.form.get("url")
 
-    if len(submitted_url) > 255 or not validate_url(submitted_url):
+    if not validate_url(url):
         flash("Некорректный URL", "danger")
-        return render_template(
-            "index.html",
-            flashed_messages=get_flashed_messages(with_categories=True),
-        ), 422
+        return redirect(url_for("index"))
 
-    parsed = urlparse(submitted_url)
-    normalized_url = f"{parsed.scheme}://{parsed.netloc}"
+    normalized_url = normalize_url(url)
     existing_url = repo.get_url_by_name(normalized_url)
 
     if existing_url:
         flash("Страница уже существует", "info")
         return redirect(url_for("show_url_info", url_id=existing_url["id"]))
 
-    url_id = repo.save_url(normalized_url)
+    url_id = repo.insert_url(normalized_url)
     flash("Страница успешно добавлена", "success")
     return redirect(url_for("show_url_info", url_id=url_id))
 
@@ -55,8 +53,8 @@ def add_url():
 def show_url_info(url_id):
     """Show details for specific URL with flash_messages"""
     flash_messages = get_flashed_messages(with_categories=True)
-    url_data = repo.get_url_by_id(url_id)
-    url_checks = repo.get_all_checks(url_id)
+    url_data = repo.get_url(url_id)
+    url_checks = repo.get_checks_by_url_id(url_id)
 
     return render_template(
         "url.html",
@@ -66,32 +64,29 @@ def show_url_info(url_id):
     )
 
 
-@app.get("/urls")
+@app.route("/urls")
 def get_urls():
     """Show all URLs"""
-    all_urls = repo.get_all_urls()
+    all_urls = repo.get_urls_with_last_check_date_and_status_code()
     return render_template("urls.html", urls=all_urls)
 
 
 @app.post("/urls/<int:url_id>/checks")
 def add_url_check(url_id):
     """Add new check for specific URL"""
-    url = repo.get_url_by_id(url_id).get("name", "")
-    response = requests.get(url, timeout=180)
-    try:
-        response.raise_for_status()
-        status = response.status_code
-        soup = BeautifulSoup(response.text, "html.parser")
-        h1_tag = soup.find("h1")
-        h1 = h1_tag.text.strip() if h1_tag else None
-        title_tag = soup.find("title")
-        title = title_tag.text.strip() if title_tag else None
-        description_tag = soup.find("meta", attrs={"name": "description"})
-        description = (
-            description_tag["content"].strip() if description_tag else None,
-        )
-        repo.save_url_check(url_id, status, h1, title, description)
-        flash("Страница успешно проверена", "success")
-    except requests.exceptions.RequestException:
+    url = repo.get_url(url_id).get("name", "")
+    result = check_and_parse_url(url)
+
+    if result is False:
         flash("Произошла ошибка при проверке", "danger")
+    else:
+        repo.insert_url_check(
+            url_id,
+            result["status_code"],
+            result["h1"],
+            result["title"],
+            result["description"],
+        )
+        flash("Страница успешно проверена", "success")
+
     return redirect(url_for("show_url_info", url_id=url_id))

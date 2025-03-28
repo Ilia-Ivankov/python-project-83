@@ -1,17 +1,34 @@
 import psycopg2
-from psycopg2.extras import DictCursor
+from psycopg2.extras import DictCursor, NamedTupleCursor
 from datetime import datetime
-from page_analyzer.config import DATABASE_URL
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 class UrlRepository:
     """Repository class for handling URL-related database operations."""
 
-    def save_url(self, url: str) -> int:
-        """Saves a URL in the database and returns its ID."""
-        with psycopg2.connect(DATABASE_URL) as db_connection:
-            with db_connection.cursor(cursor_factory=DictCursor) as cursor:
-                cursor.execute(
+    def connect_db(self):
+        """Establishes database connection."""
+        return psycopg2.connect(DATABASE_URL)
+
+    def commit(self, connection):
+        """Commits transaction."""
+        connection.commit()
+
+    def close(self, connection):
+        """Closes database connection."""
+        connection.close()
+
+    def insert_url(self, url: str) -> int:
+        """Inserts URL into database and returns its ID."""
+        with self.connect_db() as conn:
+            with conn.cursor(cursor_factory=DictCursor) as cur:
+                cur.execute(
                     """
                     INSERT INTO urls (name, created_at)
                     VALUES (%s, %s)
@@ -19,29 +36,40 @@ class UrlRepository:
                     """,
                     (url, datetime.today()),
                 )
-                db_connection.commit()
-                return cursor.fetchone()["id"]
+                self.commit(conn)
+                return cur.fetchone()["id"]
 
-    def get_url_by_id(self, url_id: int) -> dict:
+    def get_url(self, url_id: int) -> dict:
         """Retrieves URL data by its ID."""
-        with psycopg2.connect(DATABASE_URL) as db_connection:
-            with db_connection.cursor(cursor_factory=DictCursor) as cursor:
-                cursor.execute(
+        with self.connect_db() as conn:
+            with conn.cursor(cursor_factory=DictCursor) as cur:
+                cur.execute(
                     """
                     SELECT * FROM urls WHERE id = %s
                     """,
                     (url_id,),
                 )
-                result = cursor.fetchone()
+                result = cur.fetchone()
                 return result if result else None
 
-    def get_all_urls(self) -> list:
-        """
-        Retrieves all URLs with their latest check date and response code.
-        """
-        with psycopg2.connect(DATABASE_URL) as db_connection:
-            with db_connection.cursor(cursor_factory=DictCursor) as cursor:
-                cursor.execute(
+    def get_url_by_name(self, url_name: str) -> dict:
+        """Retrieves URL data by its name."""
+        with self.connect_db() as conn:
+            with conn.cursor(cursor_factory=DictCursor) as cur:
+                cur.execute(
+                    """
+                    SELECT * FROM urls WHERE name = %s
+                    """,
+                    (url_name,),
+                )
+                result = cur.fetchone()
+                return result if result else None
+
+    def get_urls_with_last_check_date_and_status_code(self) -> list:
+        """Retrieves all URLs with their latest check date and status code."""
+        with self.connect_db() as conn:
+            with conn.cursor(cursor_factory=NamedTupleCursor) as cur:
+                cur.execute(
                     """
                     SELECT
                         urls.id AS ID,
@@ -63,22 +91,9 @@ class UrlRepository:
                     ORDER BY urls.created_at DESC;
                     """
                 )
-                return cursor.fetchall()
+                return cur.fetchall()
 
-    def get_url_by_name(self, url_name: str) -> dict:
-        """Retrieves URL data by its name."""
-        with psycopg2.connect(DATABASE_URL) as db_connection:
-            with db_connection.cursor(cursor_factory=DictCursor) as cursor:
-                cursor.execute(
-                    """
-                    SELECT * FROM urls WHERE name = %s
-                    """,
-                    (url_name,),
-                )
-                result = cursor.fetchone()
-                return result if result else None
-
-    def save_url_check(
+    def insert_url_check(
         self,
         url_id: int,
         status_code: int,
@@ -86,10 +101,10 @@ class UrlRepository:
         title: str | None,
         description: str | None,
     ) -> int:
-        """Saves a URL check and returns the check ID."""
-        with psycopg2.connect(DATABASE_URL) as db_connection:
-            with db_connection.cursor(cursor_factory=DictCursor) as cursor:
-                cursor.execute(
+        """Inserts URL check and returns the check ID."""
+        with self.connect_db() as conn:
+            with conn.cursor(cursor_factory=DictCursor) as cur:
+                cur.execute(
                     """
                     INSERT INTO url_checks (
                         url_id, status_code, h1, title, description, created_at
@@ -105,17 +120,17 @@ class UrlRepository:
                         datetime.today()
                     ),
                 )
-                db_connection.commit()
-                return cursor.fetchone()["id"]
+                self.commit(conn)
+                return cur.fetchone()["id"]
 
-    def get_all_checks(self, url_id: int) -> list:
+    def get_checks_by_url_id(self, url_id: int) -> list:
         """Retrieves all checks for a specific URL."""
-        with psycopg2.connect(DATABASE_URL) as db_connection:
-            with db_connection.cursor(cursor_factory=DictCursor) as cursor:
-                cursor.execute(
+        with self.connect_db() as conn:
+            with conn.cursor(cursor_factory=NamedTupleCursor) as cur:
+                cur.execute(
                     """
                     SELECT * FROM url_checks WHERE url_id = %s ORDER BY id DESC
                     """,
                     (url_id,),
                 )
-                return cursor.fetchall()
+                return cur.fetchall()
