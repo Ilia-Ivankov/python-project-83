@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS urls (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL,
-    created_at DATE DEFAULT CURRENT TIMESTAMP
+    created_at DATE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Таблица для хранения проверок URL.
@@ -13,5 +13,5 @@ CREATE TABLE IF NOT EXISTS url_checks (
     h1 VARCHAR(255),
     title VARCHAR(255),
     description TEXT,
-    created_at DATE DEFAULT CURRENT TIMESTAMP
+    created_at DATE DEFAULT CURRENT_TIMESTAMP
 );
