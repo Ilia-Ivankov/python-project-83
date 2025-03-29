@@ -51,7 +51,7 @@ class UrlRepository:
                 )
                 result = cur.fetchone()
                 return result if result else None
-    
+
     def get_urls(self) -> list[dict]:
         """Retrieves all URLs from the database."""
         with self.connect_db() as conn:
@@ -120,17 +120,10 @@ class UrlRepository:
                     """
                     INSERT INTO url_checks (
                         url_id, status_code, h1, title, description, created_at
-                    ) VALUES (%s, %s, %s, %s, %s, %s)
-                    RETURNING id
+                    ) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id
                     """,
-                    (
-                        url_id,
-                        status_code,
-                        h1,
-                        title,
-                        description,
-                        datetime.today()
-                    ),
+                    (url_id, status_code, h1, title,
+                        description, datetime.today()),
                 )
                 self.commit(conn)
                 return cur.fetchone()["id"]

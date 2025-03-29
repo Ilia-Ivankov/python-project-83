@@ -3,6 +3,8 @@
 [![Hexlet tests](https://github.com/Ilia-Ivankov/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Ilia-Ivankov/python-project-83/actions)
 ## CI 
 [![CI Status](https://github.com/Ilia-Ivankov/python-project-83/actions/workflows/ci.yml/badge.svg)](https://github.com/Ilia-Ivankov/python-project-83/actions/workflows/ci.yml)
+## Maintainability
+[![Maintainability](https://api.codeclimate.com/v1/badges/11fe059c586729107e2b/maintainability)](https://codeclimate.com/github/Ilia-Ivankov/python-project-83/maintainability)
 
 ## Project Description 📝
 
@@ -67,11 +69,7 @@ To start the application, use:
 make start
 ```
 
-For development mode with automatic reloading:
-
-```bash
-make dev
-```
+> **Note:** Make sure you have PostgreSQL installed or the project won't work
 
 ## Linting 🧹
 
