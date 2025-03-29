@@ -56,8 +56,6 @@ Then run:
 make build
 ```
 
-*!Make sure you have postgresql installed or else project won't work*
-
 This command will:
 1. Install all required dependencies
 2. Set up the database
@@ -69,7 +67,7 @@ To start the application, use:
 make start
 ```
 
-> **Note:** Make sure you have PostgreSQL installed or the project won't work
+> **Note:** Make sure you have PostgreSQL installed and export Database Url by doing this: `export DATABASE_URL=postgresql://janedoe:mypassword@localhost:5432/mydb`(replace with actual values) or the project won't work
 
 ## Linting 🧹
 
@@ -86,3 +84,9 @@ make lint
 4. View analysis results in the detailed table
 5. Click "Запустить проверку" to start SEO analyze 
 6. Manage all websites through the "Сайты" section
+
+<div style="background: #f5f5f5; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+  <h2 style="color: #333; margin-bottom: 15px; font-size: 1.5em;">Installation, Dev mode, Linting demo</h2>
+  <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px;">
+    <script src="https://asciinema.org/a/AdHrTnbkPX040D0vGrizyyiXd.js" id="asciicast-AdHrTnbkPX040D0vGrizyyiXd" async="true"></script>
+</div>
