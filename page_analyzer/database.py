@@ -39,7 +39,7 @@ class UrlRepository:
                 self.commit(conn)
                 return cur.fetchone()["id"]
 
-    def get_url(self, url_id: int) -> dict:
+    def get_url(self, url_id: int) -> dict | None:
         """Retrieves URL data by its ID."""
         with self.connect_db() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cur:
@@ -51,8 +51,20 @@ class UrlRepository:
                 )
                 result = cur.fetchone()
                 return result if result else None
+    
+    def get_urls(self) -> list[dict]:
+        """Retrieves all URLs from the database."""
+        with self.connect_db() as conn:
+            with conn.cursor(cursor_factory=DictCursor) as cur:
+                cur.execute(
+                    """
+                    SELECT * FROM urls
+                    """
+                )
+                result = cur.fetchall()
+                return result if result else []
 
-    def get_url_by_name(self, url_name: str) -> dict:
+    def get_url_by_name(self, url_name: str) -> dict | None:
         """Retrieves URL data by its name."""
         with self.connect_db() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cur:
