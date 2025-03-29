@@ -85,8 +85,5 @@ make lint
 5. Click "Запустить проверку" to start SEO analyze 
 6. Manage all websites through the "Сайты" section
 
-<div style="background: #f5f5f5; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-  <h2 style="color: #333; margin-bottom: 15px; font-size: 1.5em;">Installation, Dev mode, Linting demo</h2>
-  <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px;">
-    <script src="https://asciinema.org/a/AdHrTnbkPX040D0vGrizyyiXd.js" id="asciicast-AdHrTnbkPX040D0vGrizyyiXd" async="true"></script>
-</div>
+## Installation, Dev Mode, Linting demo
+[![asciicast](https://asciinema.org/a/AdHrTnbkPX040D0vGrizyyiXd.svg)](https://asciinema.org/a/AdHrTnbkPX040D0vGrizyyiXd)
