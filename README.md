@@ -56,6 +56,8 @@ Then run:
 make build
 ```
 
+> **Note:** Make sure you have PostgreSQL installed and export Database Url by doing this: `export DATABASE_URL=postgresql://janedoe:mypassword@localhost:5432/mydb`(replace with actual values) or the project won't work
+
 This command will:
 1. Install all required dependencies
 2. Set up the database
@@ -67,7 +69,6 @@ To start the application, use:
 make start
 ```
 
-> **Note:** Make sure you have PostgreSQL installed and export Database Url by doing this: `export DATABASE_URL=postgresql://janedoe:mypassword@localhost:5432/mydb`(replace with actual values) or the project won't work
 
 ## Linting 🧹
 
