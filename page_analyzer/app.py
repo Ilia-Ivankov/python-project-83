@@ -9,7 +9,7 @@ from flask import (
 )
 from page_analyzer.database import UrlRepository
 from page_analyzer.utils import normalize_url, validate_url
-from page_analyzer.page_checker import check_and_parse_url 
+from page_analyzer.page_checker import check_and_parse_url
 from dotenv import load_dotenv
 import os
 
@@ -101,13 +101,15 @@ def page_not_found(error):
     return (
         "Здесь нет того, что вы ищете. <a href='/'>Вернуться на главную</a>",
         404,
-        {'Content-Type': 'text/html; charset=utf-8'}
+        {"Content-Type": "text/html; charset=utf-8"},
     )
+
 
 @app.errorhandler(500)
 def internal_server_error(error):
     return (
-        "Произошла внутренняя ошибка сервера. <a href='/'>Вернуться на главную</a>",
+        """Произошла внутренняя ошибка сервера.
+        <a href='/'>Вернуться на главную</a>""",
         500,
-        {'Content-Type': 'text/html; charset=utf-8'}
+        {"Content-Type": "text/html; charset=utf-8"},
     )

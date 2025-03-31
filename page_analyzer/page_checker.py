@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
+
 def check_and_parse_url(url: str) -> dict | bool:
     """Check URL and parse SEO elements, return False on error"""
     try:
